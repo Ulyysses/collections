@@ -1,10 +1,17 @@
 import ItemList from "@/item-list";
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { Box, Flex, Heading, IconButton, Text } from "@chakra-ui/react";
 
 const Collection = () => {
   return (
     <Box>
-      <Heading size="lg">Collection of Detective Books</Heading>
+      <Flex justifyContent="space-between">
+        <Heading size="lg">Collection of Detective Books</Heading>
+        <IconButton
+          aria-label="Delete Collection"
+          icon={<DeleteIcon />}
+        />
+      </Flex>
       <Text fontSize="xl">
         Dive into a world of suspense with our thrilling detective novel
         collection, ranging from gritty urban landscapes to mysterious
