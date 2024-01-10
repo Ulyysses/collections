@@ -1,3 +1,4 @@
+import { mockDataCollections } from "@/mockDataCollections";
 import {
   Card,
   Stack,
@@ -10,20 +11,27 @@ import {
 
 const CollectionList = () => {
   return (
-    <Link href="collection-page">
-      <Flex direction="column" gap={2}>
-        <Card overflow="hidden" variant="outline" maxH="200px">
-          <Stack direction="row" alignItems="center" flex="1">
-            <CardBody>
-              <Heading size="md">Collection of detective books</Heading>
-              <Tag marginRight="2" marginBottom="2">
-                Books
-              </Tag>
-            </CardBody>
-          </Stack>
+    <Flex direction="column" gap={2}>
+      {mockDataCollections.map((collection) => (
+        <Card
+          overflow="hidden"
+          variant="outline"
+          maxH="200px"
+          key={collection.id}
+        >
+          <Link href="collection-page">
+            <Stack direction="row" alignItems="center" flex="1">
+              <CardBody>
+                <Heading size="md">{collection.title}</Heading>
+                <Tag marginRight="2" marginBottom="2">
+                  {collection.category}
+                </Tag>
+              </CardBody>
+            </Stack>
+          </Link>
         </Card>
-      </Flex>
-    </Link>
+      ))}
+    </Flex>
   );
 };
 
