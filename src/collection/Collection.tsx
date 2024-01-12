@@ -1,8 +1,10 @@
-'use client';
+"use client";
 
+import { getCollection } from "@/db/getCollection";
 import ItemList from "@/item-list";
 import ItemModal from "@/item-modal";
-import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import { ICollection, IItem } from "@/types";
+import { AddIcon, DeleteIcon, SpinnerIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
@@ -11,15 +13,46 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
-const Collection = () => {
+interface CollectionProps {
+  id: string;
+}
+
+const Collection = ({ id }: CollectionProps) => {
+  const [collection, setCollection] = useState<ICollection>();
+  const [loading, setLoading] = useState(true);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const collection = await getCollection(id);
+        setCollection(collection);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <Box>
+        <SpinnerIcon />
+      </Box>
+    );
+  }
 
   return (
     <>
       <Box>
         <Flex justifyContent="space-between">
-          <Heading size="lg">Collection of Detective Books</Heading>
+          <Heading size="lg">{collection?.title}</Heading>
           <Flex gap="4px">
             <IconButton
               aria-label="Add new item in collection"
@@ -29,21 +62,12 @@ const Collection = () => {
             <IconButton aria-label="Delete Collection" icon={<DeleteIcon />} />
           </Flex>
         </Flex>
-        <Text fontSize="xl">
-          Dive into a world of suspense with our thrilling detective novel
-          collection, ranging from gritty urban landscapes to mysterious
-          countryside settings. Follow brilliant investigators as they unravel
-          dark secrets, navigate crime scenes, and make clever deductions in a
-          rollercoaster of suspense. Whether you crave classic whodunits or
-          gripping police procedurals, our collection promises an
-          edge-of-your-seat literary journey where every clue counts, and every
-          mystery demands to be solved. Are you up for the challenge?
-        </Text>
-        <Text fontSize="lg">Books</Text>
-        <ItemList />
+        <Text fontSize="xl">{collection?.description}</Text>
+        <Text fontSize="lg">{collection?.category}</Text>
+        <ItemList collectionId={id}/>
       </Box>
 
-      <ItemModal isOpen={isOpen} onClose={onClose} />
+      <ItemModal isOpen={isOpen} onClose={onClose}/>
     </>
   );
 };

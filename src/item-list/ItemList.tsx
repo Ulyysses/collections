@@ -1,4 +1,6 @@
+import { getItemList } from "@/db/getItemList";
 import { mockDataItems } from "@/mockDataItems";
+import { IItem } from "@/types";
 import {
   Card,
   Stack,
@@ -10,20 +12,37 @@ import {
   Flex,
   Link,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
-const ItemList = () => {
+interface ItemListProps {
+  collectionId: string;
+}
+
+const ItemList = ({ collectionId }: ItemListProps) => {
+  const [itemList, setItemList] = useState<IItem[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const list = await getItemList(collectionId);
+        setItemList(list);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [collectionId]);
+
   return (
     <Flex direction="column" gap={2}>
-      {mockDataItems.map((item) => (
-        <Card overflow="hidden" variant="outline" maxH="200px" key={item.id}>
-          <Link href="item-page">
+      {itemList.map((item) => (
+        <Card overflow="hidden" variant="outline" maxH="200px" key={item._id}>
+          <Link href={`/item/${item._id}`}>
             <Stack direction="row" alignItems="center" flex="1">
               <CardBody>
                 <Heading size="md">{item.name}</Heading>
-                <Text py="2">
-                  Caffè latte is a coffee beverage of Italian origin made with
-                  espresso and steamed milk.
-                </Text>
+                {item.description && <Text py="2">{item.description}</Text>}
               </CardBody>
               <CardFooter display="flex" flexWrap="wrap" maxW="500px">
                 {item.tags.map((tag, index) => (
