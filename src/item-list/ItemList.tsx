@@ -1,5 +1,4 @@
 import { getItemList } from "@/db/getItemList";
-import { mockDataItems } from "@/mockDataItems";
 import { IItem } from "@/types";
 import {
   Card,
