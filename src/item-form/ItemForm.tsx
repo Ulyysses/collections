@@ -11,7 +11,7 @@ const ItemForm = () => {
   return (
     <Box>
       <Heading size="md" mb="20px">
-        Add an item
+        New Item
       </Heading>
 
       <FormControl mb="40px">

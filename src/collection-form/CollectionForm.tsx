@@ -44,7 +44,7 @@ const CollectionForm = () => {
         ))}
       </Select>
 
-      <Button colorScheme="teal" size="lg" onClick={handleAddNewCollection}>
+      <Button colorScheme="teal" size="lg" onClick={handleAddNewCollection} mb="40px">
         Create a new collection
       </Button>
 

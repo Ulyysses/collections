@@ -1,5 +1,5 @@
 export interface ICollection {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   category: string;
@@ -7,10 +7,11 @@ export interface ICollection {
 }
 
 export interface IItem {
-  id: string;
+  _id: string;
   collectionId: string;
   name: string;
   tags: string[];
+  description?: string;
 }
 
 export enum CollectibleType {
