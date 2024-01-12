@@ -1,8 +1,7 @@
-
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = "mongodb+srv://SaninaUlyana:${process.env.MONGODB_PASSWORD}@collections.zfhzge0.mongodb.net/?retryWrites=true&w=majority";
 
-const client = new MongoClient(uri, {
+export const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
