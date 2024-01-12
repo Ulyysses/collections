@@ -6,10 +6,18 @@ export const metadata: Metadata = {
   title: "Collection",
 };
 
-export default function CollectionPage() {
+interface CollectionPage {
+  params: {
+    id: string
+  };
+}
+
+export default function CollectionPage({ params }: CollectionPage) {
+  const id = params.id;
+  
   return (
     <MainLayout>
-      <Collection />
+      <Collection id={id}/>
     </MainLayout>
   );
 }

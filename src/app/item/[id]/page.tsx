@@ -6,10 +6,18 @@ export const metadata: Metadata = {
   title: "Item",
 };
 
-export default function ItemPage() {
+interface ItemPage {
+  params: {
+    id: string
+  };
+}
+
+export default function ItemPage({ params }: ItemPage) {
+  const id = params.id;
+
   return (
     <MainLayout>
-      <Item />
+      <Item id={id}/>
     </MainLayout>
   );
 }

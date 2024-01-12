@@ -9,7 +9,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-const Item = () => {
+interface CollectionProps {
+  id: string;
+}
+
+const Item = ({ id }: CollectionProps) => {
   return (
     <Card
       direction={{ base: "column", sm: "row" }}
