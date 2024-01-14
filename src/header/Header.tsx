@@ -11,8 +11,8 @@ const Header = () => {
               Coll
             </Heading>
           </Link>
-          <Link href="collection">All collections</Link>
-          <Link href="create-collection">Create a new collection</Link>
+          <Link href="/collection">All collections</Link>
+          <Link href="/create-collection">Create a new collection</Link>
         </Flex>
       </MainLayout>
     </Box>
