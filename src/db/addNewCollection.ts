@@ -1,20 +1,18 @@
-"use server"
+"use server";
 
 import { client } from "./connectMongo";
 
-export const addNewCollection = async () => {
+interface NewCollection {
+  title: string;
+  description: string;
+  category: string;
+}
+
+export const addNewCollection = async (newCollection: NewCollection) => {
   try {
     await client.connect();
     const database = client.db("collections");
-    const collection = database.collection("collections-list");
-
-    const newCollection = {
-      id: "1",
-      title: "Collection of Detective Books",
-      category: "Books",
-      description:
-        "A captivating assortment of detective novels from various authors and eras.",
-    };
+    const collection = database.collection("collection_list");
 
     await collection.insertOne(newCollection);
 
