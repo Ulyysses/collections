@@ -44,7 +44,7 @@ const ItemList = ({ collectionId }: ItemListProps) => {
                 {item.description && <Text py="2">{item.description}</Text>}
               </CardBody>
               <CardFooter display="flex" flexWrap="wrap" maxW="500px">
-                {item.tags.map((tag, index) => (
+                {item.tags?.map((tag, index) => (
                   <Tag marginRight="2" marginBottom="2" key={index}>
                     {tag}
                   </Tag>
