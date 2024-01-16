@@ -1,8 +1,8 @@
 "use client";
 
 import { getCollectionList } from "@/db/getCollectionList";
+import Loader from "@/loader";
 import { ICollection } from "@/types";
-import { SpinnerIcon } from "@chakra-ui/icons";
 import {
   Card,
   Stack,
@@ -11,7 +11,6 @@ import {
   Tag,
   Flex,
   Link,
-  Box,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
@@ -36,9 +35,7 @@ const CollectionList = () => {
 
   if (loading) {
     return (
-      <Box>
-        <SpinnerIcon />
-      </Box>
+      <Loader/>
     );
   }
 

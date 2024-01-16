@@ -3,8 +3,9 @@
 import { getCollection } from "@/db/getCollection";
 import ItemList from "@/item-list";
 import ItemModal from "@/item-modal";
+import Loader from "@/loader";
 import { ICollection } from "@/types";
-import { AddIcon, DeleteIcon, EditIcon, SpinnerIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
@@ -20,6 +21,7 @@ interface CollectionProps {
 }
 
 const Collection = ({ id }: CollectionProps) => {
+  console.log("🚀 ~ file: Collection.tsx:23 ~ Collection ~ id:", id);
   const [collection, setCollection] = useState<ICollection>();
   const [loading, setLoading] = useState(true);
 
@@ -42,9 +44,7 @@ const Collection = ({ id }: CollectionProps) => {
 
   if (loading) {
     return (
-      <Box>
-        <SpinnerIcon />
-      </Box>
+      <Loader /> 
     );
   }
 
@@ -65,10 +65,10 @@ const Collection = ({ id }: CollectionProps) => {
         </Flex>
         <Text fontSize="xl">{collection?.description}</Text>
         <Text fontSize="lg">{collection?.category}</Text>
-        <ItemList collectionId={id}/>
+        <ItemList collectionId={id} />
       </Box>
 
-      <ItemModal isOpen={isOpen} onClose={onClose} collectionId={id}/>
+      <ItemModal isOpen={isOpen} onClose={onClose} collectionId={id} />
     </>
   );
 };
