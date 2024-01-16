@@ -8,14 +8,15 @@ import {
 interface IItemForm {
   isOpen: boolean;
   onClose: () => void;
+  collectionId: string;
 }
 
-const NewItemModal = ({ isOpen, onClose }: IItemForm) => {
+const NewItemModal = ({ isOpen, onClose, collectionId }: IItemForm) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent p="40px">
-        <ItemForm />
+        <ItemForm collectionId={collectionId}/>
       </ModalContent>
     </Modal>
   );
