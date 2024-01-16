@@ -3,8 +3,8 @@
 import { getCollection } from "@/db/getCollection";
 import ItemList from "@/item-list";
 import ItemModal from "@/item-modal";
-import { ICollection, IItem } from "@/types";
-import { AddIcon, DeleteIcon, SpinnerIcon } from "@chakra-ui/icons";
+import { ICollection } from "@/types";
+import { AddIcon, DeleteIcon, EditIcon, SpinnerIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
@@ -59,6 +59,7 @@ const Collection = ({ id }: CollectionProps) => {
               icon={<AddIcon />}
               onClick={onOpen}
             />
+            <IconButton aria-label="Edit Collection" icon={<EditIcon />} />
             <IconButton aria-label="Delete Collection" icon={<DeleteIcon />} />
           </Flex>
         </Flex>
@@ -67,7 +68,7 @@ const Collection = ({ id }: CollectionProps) => {
         <ItemList collectionId={id}/>
       </Box>
 
-      <ItemModal isOpen={isOpen} onClose={onClose}/>
+      <ItemModal isOpen={isOpen} onClose={onClose} collectionId={id}/>
     </>
   );
 };
