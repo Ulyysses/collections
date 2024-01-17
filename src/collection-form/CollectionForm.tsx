@@ -1,7 +1,7 @@
 "use client";
 
 import { addNewCollection } from "@/db/addNewCollection";
-import { CollectibleType } from "@/types";
+import { CollectibleType, ICollection } from "@/types";
 import {
   Box,
   Button,
@@ -11,32 +11,17 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const CollectionForm = () => {
-  const [value, setValue] = useState({
-    title: "",
-    description: "",
-    category: "",
-  });
+  const { register, handleSubmit, reset } = useForm();
 
-  const onChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setValue({
-      ...value,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleAddNewCollection = async () => {
+  const onSubmit = async (data) => {
+    console.log("🚀 ~ file: CollectionForm.tsx:51 ~ onSubmit ~ data:", data);
     try {
-      await addNewCollection(value);
-      setValue({
-        title: "",
-        description: "",
-        category: "",
-      });
+      console.log('pukpuk');
+      await addNewCollection(data);
+      reset();
     } catch (error) {
       console.error("Error adding new collection:", error);
     }
@@ -46,51 +31,48 @@ const CollectionForm = () => {
     <Box>
       <Heading mb="20px">Create a new collection!</Heading>
 
-      <FormControl mb="40px">
-        <FormLabel mb="2px">Title:</FormLabel>
-        <Input
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormControl mb="40px">
+          <FormLabel mb="2px">Title:</FormLabel>
+          <Input
+            variant="flushed"
+            type="text"
+            {...register("title", { required: true })}
+          />
+        </FormControl>
+
+        <FormControl mb="40px">
+          <FormLabel mb="2px">Description:</FormLabel>
+          <Input
+            variant="flushed"
+            type="text"
+            {...register("description", { required: true })}
+          />
+        </FormControl>
+
+        <Select
+          placeholder="Category"
           variant="flushed"
-          type="text"
-          name="title"
-          value={value.title}
-          onChange={onChange}
-        />
-      </FormControl>
+          mb="40px"
+          {...register("category", { required: true })}
+        >
+          {Object.values(CollectibleType).map((type, index) => (
+            <option key={index} value={type}>
+              {type}
+            </option>
+          ))}
+        </Select>
 
-      <FormControl mb="40px">
-        <FormLabel mb="2px">Description:</FormLabel>
-        <Input
-          variant="flushed"
-          type="text"
-          name="description"
-          value={value.description}
-          onChange={onChange}
-        />
-      </FormControl>
-
-      <Select
-        placeholder="Category"
-        variant="flushed"
-        mb="40px"
-        name="category"
-        value={value.category}
-        onChange={onChange}
-      >
-        {Object.values(CollectibleType).map((type, index) => (
-          <option key={index} value={type}>
-            {type}
-          </option>
-        ))}
-      </Select>
-
-      <Button
-        colorScheme="teal"
-        size="lg"
-        onClick={handleAddNewCollection}
-        mb="40px"
-      >
-        Create a new collection
-      </Button>
+        <Button
+          colorScheme="teal"
+          size="lg"
+          // onClick={handleAddNewCollection}
+          mb="40px"
+          type="submit"
+        >
+          Create a new collection
+        </Button>
+      </form>
     </Box>
   );
 };
