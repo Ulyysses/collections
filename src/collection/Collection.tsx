@@ -21,7 +21,6 @@ interface CollectionProps {
 }
 
 const Collection = ({ id }: CollectionProps) => {
-  console.log("🚀 ~ file: Collection.tsx:23 ~ Collection ~ id:", id);
   const [collection, setCollection] = useState<ICollection>();
   const [loading, setLoading] = useState(true);
 
@@ -37,7 +36,7 @@ const Collection = ({ id }: CollectionProps) => {
       } finally {
         setLoading(false);
       }
-    };
+    }; 
 
     fetchData();
   }, [id]);

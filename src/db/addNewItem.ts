@@ -13,7 +13,6 @@ export const addNewItem = async (newItem: IItem) => {
         savedItem
       );
     });
-
     console.log("New item added to MongoDB:", newItem);
   } catch (error) {
     console.error("Error adding new item:", error);
