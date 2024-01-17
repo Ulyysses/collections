@@ -2,10 +2,11 @@
 
 import { connectionMongo, tag_list } from "./connectMongo";
 
-export const getTag = async (tagValue: string) => {
+export const getTag = async (id: string) => {
   try {
     await connectionMongo;
-    return await tag_list.findOne({ tagName: tagValue });
+    const tagDocument = await tag_list.findById(id).lean();
+    return tagDocument?.tagName;
   } catch (error) {
     console.error(error);
     throw error;

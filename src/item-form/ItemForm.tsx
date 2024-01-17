@@ -2,7 +2,7 @@
 
 import { addNewItem } from "@/db/addNewItem";
 import { addNewTag } from "@/db/addNewTag";
-import { getTag } from "@/db/getTag";
+import { IItem } from "@/types";
 import {
   Box,
   Button,
@@ -15,25 +15,18 @@ import {
   InputRightElement,
   Tag,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
-
-interface ItemValue {
-  collectionId: string;
-  name: string;
-  tagsId: string[];
-}
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface ItemFormProps {
   collectionId: string;
 }
 
 const ItemForm = ({ collectionId }: ItemFormProps) => {
-  const [value, setValue] = useState<ItemValue>({
-    collectionId: "",
+  const [value, setValue] = useState<IItem>({
+    collectionId: collectionId,
     name: "",
     tagsId: [],
   });
-  console.log("🚀 ~ file: ItemForm.tsx:36 ~ ItemForm ~ value:", value)
   const [tagValue, setTagValue] = useState("");
   const [tags, setTags] = useState<string[]>([]);
 
@@ -44,25 +37,35 @@ const ItemForm = ({ collectionId }: ItemFormProps) => {
     });
   };
 
-  const handleAddNewTag = async () => {
-    try {
-      await addNewTag(tagValue);
-      const tagObject = await getTag(tagValue);
-      setValue((prevValue) => ({
-        ...prevValue,
-        tagsId: [...prevValue.tagsId, tagObject._id],
-        collectionId: collectionId,
-      }));
-      setTags((prevTags) => [...prevTags, tagValue]);
-      setTagValue("");
-    } catch (error) {
-      console.error("Error adding new tag:", error);
-    }
+  const handleAddNewTag = () => {
+    setTags((prevTags) => [...prevTags, tagValue]);
+    setTagValue("");
   };
+
+  useEffect(() => {
+    const tagData = async () => {
+      try {
+        const tagPromises = tags.map((tag) => addNewTag(tag));
+        const savedTags = await Promise.all(tagPromises);
+        const tagIds = savedTags.map((savedTag) => savedTag._id);
+
+        setValue((prevValue) => ({
+          ...prevValue,
+          tagsId: [...tagIds],
+        }));
+        
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    tagData();
+  }, [tags]);
 
   const handleAddNewItem = async () => {
     try {
       await addNewItem(value);
+
       setValue({
         collectionId: "",
         name: "",
