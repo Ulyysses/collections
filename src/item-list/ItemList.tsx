@@ -14,13 +14,14 @@ import {
   Flex,
   Link,
 } from "@chakra-ui/react";
+import { FlattenMaps } from "mongoose";
 import { useEffect, useState } from "react";
 
 interface ItemListProps {
   collectionId: string;
 }
 
-interface itemList {
+interface Item {
   collectionId: string;
   name: string;
   tagNames?: string[];
@@ -30,13 +31,27 @@ interface itemList {
 }
 
 const ItemList = ({ collectionId }: ItemListProps) => {
-  const [itemList, setItemList] = useState<itemList[]>([]);
+  const [itemList, setItemList] = useState<Item[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const list = await getItemList(collectionId);
-        setItemList(list);
+        const listData: (FlattenMaps<any> & Required<{ _id: unknown }>)[] =
+          await getItemList(collectionId);
+
+        const processedList: Item[] = listData.map((item) => {
+          return {
+            collectionId: String(item.collectionId),
+            name: String(item.name),
+            tagsId: item.tagsId.map(String),
+            _id: String(item._id),
+            description: item.description
+              ? String(item.description)
+              : undefined,
+          };
+        });
+
+        setItemList(processedList);
       } catch (error) {
         console.log(error);
       }
@@ -60,8 +75,8 @@ const ItemList = ({ collectionId }: ItemListProps) => {
   }, [itemList]);
 
   const renderTags = async (tagsId: string[]) => {
-    const tagName = await Promise.all(tagsId.map((tagId) => getTag(tagId)));
-    return tagName;
+    const tagNames = await Promise.all(tagsId.map((tagId) => getTag(tagId)));
+    return tagNames.filter((tagName) => tagName !== undefined) as string[];
   };
 
   return (

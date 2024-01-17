@@ -1,7 +1,7 @@
 "use client";
 
 import { addNewCollection } from "@/db/addNewCollection";
-import { CollectibleType, ICollection } from "@/types";
+import { CollectibleType } from "@/types";
 import {
   Box,
   Button,
@@ -11,15 +11,19 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+type FormValues = {
+  title: string
+  description: string
+  category: string
+}
 
 const CollectionForm = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, reset } = useForm<FormValues>();
 
-  const onSubmit = async (data) => {
-    console.log("🚀 ~ file: CollectionForm.tsx:51 ~ onSubmit ~ data:", data);
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      console.log('pukpuk');
       await addNewCollection(data);
       reset();
     } catch (error) {
@@ -66,7 +70,6 @@ const CollectionForm = () => {
         <Button
           colorScheme="teal"
           size="lg"
-          // onClick={handleAddNewCollection}
           mb="40px"
           type="submit"
         >
