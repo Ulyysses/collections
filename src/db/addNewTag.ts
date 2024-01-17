@@ -1,21 +1,17 @@
 "use server";
 
-import { client } from "./connectMongo";
+import { ITag } from "@/types";
+import { connectionMongo, tag_list } from "./connectMongo";
 
 export const addNewTag = async (newTag: string) => {
   try {
-    await client.connect();
-    const database = client.db("collections");
-    const collection = database.collection("tag_list");
-
-    await collection.insertOne({
-      tagName: newTag,
+    await connectionMongo;
+    const collection = await tag_list.create(newTag);
+    return await collection.save().then((savedTag: ITag) => {
+      console.log("🚀 ~ file: addNewTag.ts:39 ~ awaitcollection.save ~ savedTag:", savedTag)
+      
     });
-
-    console.log("New tag added to MongoDB:", newTag);
   } catch (error) {
-    console.error("Error adding new tag:", error);
-  } finally {
-    await client.close();
+    console.error("Error adding new item:", error);
   }
 };

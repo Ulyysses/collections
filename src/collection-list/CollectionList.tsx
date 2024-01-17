@@ -31,7 +31,7 @@ const CollectionList = () => {
     };
 
     fetchData();
-  }, [collectionList]);
+  }, []);
 
   if (loading) {
     return (

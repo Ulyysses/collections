@@ -1,25 +1,19 @@
 "use server";
 
-import { client } from "./connectMongo";
+import { ICollection } from "@/types";
+import { collection_list, connectionMongo } from "./connectMongo";
 
-interface NewCollection {
-  title: string;
-  description: string;
-  category: string;
-}
-
-export const addNewCollection = async (newCollection: NewCollection) => {
+export const addNewCollection = async (newCollection: ICollection) => {
   try {
-    await client.connect();
-    const database = client.db("collections");
-    const collection = database.collection("collection_list");
-
-    await collection.insertOne(newCollection);
-
-    console.log("New collection added to MongoDB:", newCollection);
+    await connectionMongo;
+    const collection = await collection_list.create(newCollection);
+    await collection.save().then((savedCollection: ICollection) => {
+      console.log(
+        "🚀 ~ file: addNewCollection.ts:11 ~ awaitcollection.save ~ savedCollection:",
+        savedCollection
+      );
+    });
   } catch (error) {
     console.error("Error adding new collection:", error);
-  } finally {
-    await client.close();
   }
 };

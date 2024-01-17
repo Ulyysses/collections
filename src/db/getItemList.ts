@@ -1,17 +1,14 @@
 "use server";
 
-import { client } from "./connectMongo";
+import { connectionMongo, item_list } from "./connectMongo";
 
 export const getItemList = async (collectionId: string) => {
   try {
-    await client.connect();
-    const database = client.db("collections");
-    const collection = database.collection("item_list");
-
+    await connectionMongo;
     const query = { collectionId: collectionId };
-
-    return await collection.find(query).toArray();
-  } finally {
-    await client.close();
+    return await item_list.find(query).lean().exec();
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
 };

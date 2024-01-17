@@ -1,18 +1,14 @@
 "use server";
 
-import { client } from "./connectMongo";
+import { connectionMongo, tag_list } from "./connectMongo";
 
 export const getTag = async (tagValue: string) => {
   try {
-    await client.connect();
-    const database = client.db("collections");
-    const collection = database.collection("tag_list");
-
-    return await collection.findOne({}, { tagValue: tagValue });
+    await connectionMongo;
+    return await tag_list.findOne({ tagName: tagValue });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
-  } finally {
-    await client.close();
-  }
+  } 
 };
+
