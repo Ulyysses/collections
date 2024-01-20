@@ -1,7 +1,7 @@
 "use client";
 
-import { getItemList } from "@/db/getItemList";
-import { getTag } from "@/db/getTag";
+import { getItemList } from "@/db/receiving/getItemList";
+import { getTag } from "@/db/receiving/getTag";
 import { IItem } from "@/types";
 import {
   Card,
@@ -21,17 +21,8 @@ interface ItemListProps {
   collectionId: string;
 }
 
-interface Item {
-  collectionId: string;
-  name: string;
-  tagNames?: string[];
-  tagsId: string[];
-  _id: string;
-  description?: string;
-}
-
 const ItemList = ({ collectionId }: ItemListProps) => {
-  const [itemList, setItemList] = useState<Item[]>([]);
+  const [itemList, setItemList] = useState<IItem[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +30,7 @@ const ItemList = ({ collectionId }: ItemListProps) => {
         const listData: (FlattenMaps<any> & Required<{ _id: unknown }>)[] =
           await getItemList(collectionId);
 
-        const processedList: Item[] = listData.map((item) => {
+        const processedList: IItem[] = listData.map((item) => {
           return {
             collectionId: String(item.collectionId),
             name: String(item.name),

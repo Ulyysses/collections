@@ -1,17 +1,12 @@
 import ItemForm from "@/item-form";
+import { IModal } from "@/types";
 import {
   Modal,
   ModalContent,
   ModalOverlay
 } from "@chakra-ui/react";
 
-interface IItemForm {
-  isOpen: boolean;
-  onClose: () => void;
-  collectionId: string;
-}
-
-const NewItemModal = ({ isOpen, onClose, collectionId }: IItemForm) => {
+const NewItemModal = ({ isOpen, onClose, collectionId }: IModal) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
