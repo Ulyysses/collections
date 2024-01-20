@@ -11,7 +11,6 @@ export interface IItem {
   collectionId: string;
   name: string;
   tagsId: string[];
-  tagNames?: string[];
   description?: string;
 }
 

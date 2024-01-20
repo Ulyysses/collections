@@ -15,14 +15,19 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { FlattenMaps } from "mongoose";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface ItemListProps {
   collectionId: string;
 }
 
+interface TagsMap {
+  [key: string]: string;
+}
+
 const ItemList = ({ collectionId }: ItemListProps) => {
   const [itemList, setItemList] = useState<IItem[]>([]);
+  const [tagsMap, setTagsMap] = useState<TagsMap>({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,22 +58,26 @@ const ItemList = ({ collectionId }: ItemListProps) => {
 
   useEffect(() => {
     const fetchTags = async () => {
-      const updatedList = await Promise.all(
-        itemList.map(async (item) => {
-          const tagNames = await renderTags(item.tagsId);
-          return { ...item, tagNames };
-        })
+      await Promise.all(
+        itemList
+          .map((item) => item.tagsId)
+          .flat()
+          .map((id) => {
+            return getTag(id).then((name) => {
+              if (name) {
+                setTagsMap((tagsMap) => {
+                  return {
+                    ...tagsMap,
+                    [id]: name,
+                  };
+                });
+              }
+            });
+          })
       );
-      setItemList(updatedList);
     };
-
     fetchTags();
   }, [itemList]);
-
-  const renderTags = async (tagsId: string[]) => {
-    const tagNames = await Promise.all(tagsId.map((tagId) => getTag(tagId)));
-    return tagNames.filter((tagName) => tagName !== undefined) as string[];
-  };
 
   return (
     <Flex direction="column" gap={2}>
@@ -81,9 +90,9 @@ const ItemList = ({ collectionId }: ItemListProps) => {
                 {item.description && <Text py="2">{item.description}</Text>}
               </CardBody>
               <CardFooter display="flex" flexWrap="wrap" maxW="500px">
-                {item.tagNames?.map((tagName, index) => (
-                  <Tag marginRight="2" marginBottom="2" key={index}>
-                    {tagName}
+                {item.tagsId.map((id) => (
+                  <Tag marginRight="2" marginBottom="2" key={id}>
+                    {tagsMap[id]}
                   </Tag>
                 ))}
               </CardFooter>
