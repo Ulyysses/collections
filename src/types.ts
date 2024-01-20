@@ -11,12 +11,19 @@ export interface IItem {
   collectionId: string;
   name: string;
   tagsId: string[];
+  tagNames?: string[];
   description?: string;
 }
 
 export interface ITag {
   _id?: string;
   tagName: string;
+}
+
+export interface IModal {
+  isOpen: boolean;
+  onClose: () => void;
+  id: string;
 }
 
 export enum CollectibleType {
