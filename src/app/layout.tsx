@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className} suppressHydrationWarning={true}>
         <Providers>
-          {/* <ColorModeScript initialColorMode={theme.config.initialColorMode} /> */}
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
           <Header />
           {children}
         </Providers>

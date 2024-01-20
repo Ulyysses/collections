@@ -1,8 +1,10 @@
+"use client"
+
 import MainLayout from "@/main-layout";
 import { Box, Button, Flex, Heading, Link, useColorMode } from "@chakra-ui/react";
 
 const Header = () => {
-  // const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode, toggleColorMode } = useColorMode();
   
   return (
     <Box bg="green.500">
@@ -15,9 +17,9 @@ const Header = () => {
           </Link>
           <Link href="/collection">All collections</Link>
           <Link href="/create-collection">Create a new collection</Link>
-          {/* <Button onClick={toggleColorMode}>
+          <Button onClick={toggleColorMode}>
             Toggle {colorMode === "light" ? "Dark" : "Light"}
-          </Button> */}
+          </Button>
         </Flex>
       </MainLayout>
     </Box>
