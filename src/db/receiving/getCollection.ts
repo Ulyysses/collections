@@ -1,6 +1,6 @@
 "use server";
 
-import { collection_list, connectionMongo } from "./connectMongo";
+import { collection_list, connectionMongo } from "../connectMongo";
 
 export const getCollection = async (id: string) => {
   try {

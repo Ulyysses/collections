@@ -1,7 +1,7 @@
 "use server";
 
 import { ITag } from "@/types";
-import { connectionMongo, tag_list } from "./connectMongo";
+import { connectionMongo, tag_list } from "../connectMongo";
 
 export const addNewTag = async (newTag: string) => {
   try {

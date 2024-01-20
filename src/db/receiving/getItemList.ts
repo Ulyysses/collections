@@ -1,11 +1,11 @@
 "use server";
 
-import { connectionMongo, item_list } from "./connectMongo";
+import { connectionMongo, item_list } from "../connectMongo";
 
-export const getItemList = async (collectionId: string) => {
+export const getItemList = async (id: string) => {
   try {
     await connectionMongo;
-    const query = { collectionId: collectionId };
+    const query = { collectionId: id };
     return await item_list.find(query).lean().exec();
   } catch (error) {
     console.log(error);

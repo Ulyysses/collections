@@ -1,7 +1,7 @@
 "use server";
 
 import { ICollection } from "@/types";
-import { collection_list, connectionMongo } from "./connectMongo";
+import { collection_list, connectionMongo } from "../connectMongo";
 
 export const addNewCollection = async (newCollection: ICollection) => {
   try {

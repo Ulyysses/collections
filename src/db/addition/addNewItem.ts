@@ -1,6 +1,6 @@
 "use server";
 
-import { connectionMongo, item_list } from "./connectMongo";
+import { connectionMongo, item_list } from "../connectMongo";
 import { IItem } from "@/types";
 
 export const addNewItem = async (newItem: IItem) => {
