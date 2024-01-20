@@ -1,6 +1,7 @@
 "use client";
 
-import { getCollection } from "@/db/getCollection";
+import { deleteCollection } from "@/db/deletion/deleteCollection";
+import { getCollection } from "@/db/receiving/getCollection";
 import ItemList from "@/item-list";
 import ItemModal from "@/item-modal";
 import Loader from "@/loader";
@@ -14,6 +15,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface CollectionProps {
@@ -23,6 +25,8 @@ interface CollectionProps {
 const Collection = ({ id }: CollectionProps) => {
   const [collection, setCollection] = useState<ICollection>();
   const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -40,6 +44,11 @@ const Collection = ({ id }: CollectionProps) => {
 
     fetchData();
   }, [id]);
+
+  const handleDeleteCollection = (id: string) => {
+    deleteCollection(id);
+    router.back();
+  }
 
   if (loading) {
     return (
@@ -59,7 +68,7 @@ const Collection = ({ id }: CollectionProps) => {
               onClick={onOpen}
             />
             <IconButton aria-label="Edit Collection" icon={<EditIcon />} />
-            <IconButton aria-label="Delete Collection" icon={<DeleteIcon />} />
+            <IconButton aria-label="Delete Collection" icon={<DeleteIcon />} onClick={() => handleDeleteCollection(id)}/>
           </Flex>
         </Flex>
         <Text fontSize="xl">{collection?.description}</Text>
@@ -67,7 +76,7 @@ const Collection = ({ id }: CollectionProps) => {
         <ItemList collectionId={id} />
       </Box>
 
-      <ItemModal isOpen={isOpen} onClose={onClose} collectionId={id} />
+      <ItemModal isOpen={isOpen} onClose={onClose} id={id} />
     </>
   );
 };
