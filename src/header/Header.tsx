@@ -1,7 +1,9 @@
 import MainLayout from "@/main-layout";
-import { Box, Flex, Heading, Link } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Link, useColorMode } from "@chakra-ui/react";
 
 const Header = () => {
+  // const { colorMode, toggleColorMode } = useColorMode();
+  
   return (
     <Box bg="green.500">
       <MainLayout>
@@ -13,6 +15,9 @@ const Header = () => {
           </Link>
           <Link href="/collection">All collections</Link>
           <Link href="/create-collection">Create a new collection</Link>
+          {/* <Button onClick={toggleColorMode}>
+            Toggle {colorMode === "light" ? "Dark" : "Light"}
+          </Button> */}
         </Flex>
       </MainLayout>
     </Box>
