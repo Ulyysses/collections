@@ -25,7 +25,7 @@ interface ItemFormProps {
 }
 
 const ItemForm = ({ id }: ItemFormProps) => {
-  const { register, handleSubmit, reset, watch, setValue } = useForm<IItem>({
+  const { register, handleSubmit, reset } = useForm<IItem>({
     defaultValues: {
       collectionId: id,
       name: "",
