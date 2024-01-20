@@ -21,13 +21,13 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface ItemFormProps {
-  collectionId: string;
+  id: string;
 }
 
-const ItemForm = ({ collectionId }: ItemFormProps) => {
+const ItemForm = ({ id }: ItemFormProps) => {
   const { register, handleSubmit, reset, watch, setValue } = useForm<IItem>({
     defaultValues: {
-      collectionId: collectionId,
+      collectionId: id,
       name: "",
       tagsId: [],
     },

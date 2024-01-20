@@ -6,15 +6,15 @@ import {
   ModalOverlay
 } from "@chakra-ui/react";
 
-const NewItemModal = ({ isOpen, onClose, collectionId }: IModal) => {
+const ItemModal = ({ isOpen, onClose, id }: IModal) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent p="40px">
-        <ItemForm collectionId={collectionId}/>
+        <ItemForm id={id}/>
       </ModalContent>
     </Modal>
   );
 };
 
-export default NewItemModal;
+export default ItemModal;
