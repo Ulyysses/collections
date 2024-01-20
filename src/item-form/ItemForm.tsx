@@ -1,7 +1,7 @@
 "use client";
 
-import { addNewItem } from "@/db/addNewItem";
-import { addNewTag } from "@/db/addNewTag";
+import { addNewItem } from "@/db/addition/addNewItem";
+import { addNewTag } from "@/db/addition/addNewTag";
 import { IItem } from "@/types";
 import {
   Box,
@@ -14,8 +14,10 @@ import {
   InputGroup,
   InputRightElement,
   Tag,
+  TagCloseButton,
+  TagLabel,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface ItemFormProps {
@@ -23,7 +25,7 @@ interface ItemFormProps {
 }
 
 const ItemForm = ({ collectionId }: ItemFormProps) => {
-  const { register, handleSubmit, reset } = useForm<IItem>({
+  const { register, handleSubmit, reset, watch, setValue } = useForm<IItem>({
     defaultValues: {
       collectionId: collectionId,
       name: "",
@@ -50,7 +52,7 @@ const ItemForm = ({ collectionId }: ItemFormProps) => {
         tagsId: [],
       });
       setTags([]);
-      setTagValue("")
+      setTagValue("");
     } catch (error) {
       console.error("Error adding new item:", error);
     }
@@ -61,17 +63,23 @@ const ItemForm = ({ collectionId }: ItemFormProps) => {
     setTagValue("");
   };
 
+  const deleteTag = (indexToDelete: number) => {
+    setTags((prevTags) =>
+      prevTags.filter((_, index) => index !== indexToDelete)
+    );
+  };
+
   return (
     <Flex direction="column">
       <Heading size="md" mb="20px">
         New Item
       </Heading>
 
-<form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <FormControl mb="40px">
           <FormLabel mb="2px">Name:</FormLabel>
           <Input
-          {...register("name", { required: true })}
+            {...register("name", { required: true })}
             variant="flushed"
             type="text"
           />
@@ -87,29 +95,30 @@ const ItemForm = ({ collectionId }: ItemFormProps) => {
             onChange={(e) => setTagValue(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={handleAddNewTag}>
+            <Button h="1.75rem" size="sm" onClick={() => tagValue && handleAddNewTag()}>
               Add tag
             </Button>
           </InputRightElement>
         </InputGroup>
-        
+
         <Box mb="40px">
           {tags.map((tag, index) => (
-            <Tag marginRight="2" marginBottom="2" key={index}>
-              {tag}
+            <Tag
+              colorScheme="green"
+              marginRight="2"
+              marginBottom="2"
+              key={index}
+            >
+              <TagLabel>{tag}</TagLabel>
+              <TagCloseButton onClick={() => deleteTag(index)} />
             </Tag>
           ))}
         </Box>
 
-        <Button
-          colorScheme="teal"
-          size="lg"
-          w="84px"
-          type="submit"
-        >
+        <Button colorScheme="teal" size="lg" w="84px" type="submit">
           Add
         </Button>
-        </form>
+      </form>
     </Flex>
   );
 };
