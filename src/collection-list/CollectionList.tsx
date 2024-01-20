@@ -1,6 +1,6 @@
 "use client";
 
-import { getCollectionList } from "@/db/getCollectionList";
+import { getCollectionList } from "@/db/receiving/getCollectionList";
 import Loader from "@/loader";
 import { ICollection } from "@/types";
 import {
