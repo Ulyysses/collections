@@ -1,6 +1,6 @@
 "use client";
 
-import { addNewCollection } from "@/db/addNewCollection";
+import { addNewCollection } from "@/db/addition/addNewCollection";
 import { CollectibleType } from "@/types";
 import {
   Box,
@@ -11,16 +11,32 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type FormValues = {
-  title: string
-  description: string
-  category: string
-}
+  title: string;
+  description: string;
+  category: string;
+};
 
 const CollectionForm = () => {
-  const { register, handleSubmit, reset } = useForm<FormValues>();
+  const { register, handleSubmit, reset, watch, setValue } =
+    useForm<FormValues>();
+  const watchedValues = watch();
+
+  useEffect(() => {
+    const storedData = JSON.parse(
+      localStorage.getItem("collectionFormData") || "{}"
+    );
+    Object.entries(storedData).forEach(([field, value]) => {
+      setValue(field as keyof FormValues, value as string);
+    });
+  }, [setValue]);
+
+  useEffect(() => {
+    localStorage.setItem("collectionFormData", JSON.stringify(watchedValues));
+  }, [watchedValues]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
@@ -67,12 +83,7 @@ const CollectionForm = () => {
           ))}
         </Select>
 
-        <Button
-          colorScheme="teal"
-          size="lg"
-          mb="40px"
-          type="submit"
-        >
+        <Button colorScheme="teal" size="lg" mb="40px" type="submit">
           Create a new collection
         </Button>
       </form>
