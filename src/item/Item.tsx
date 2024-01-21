@@ -25,10 +25,15 @@ import { useEffect, useState } from "react";
 interface CollectionProps {
   id: string;
 }
+interface TagsMap {
+  [key: string]: string;
+}
 
 const Item = ({ id }: CollectionProps) => {
   const [item, setItem] = useState<IItem>();
   const [loading, setLoading] = useState(true);
+  const [tagsMap, setTagsMap] = useState<TagsMap>({});
+
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -49,30 +54,24 @@ const Item = ({ id }: CollectionProps) => {
   useEffect(() => {
     const fetchTags = async () => {
       if (item) {
-        try {
-          const tagNames = await renderTags(item?.tagsId);
-          setItem({ ...item, tagNames });
-        } catch (error) {
-          console.error(error);
-        }
+        await Promise.all(
+          item.tagsId.map((id) => {
+            return getTag(id).then((name) => {
+              if (name) {
+                setTagsMap((tagsMap) => {
+                  return {
+                    ...tagsMap,
+                    [id]: name,
+                  };
+                });
+              }
+            });
+          })
+        );
       }
     };
     fetchTags();
   }, [item]);
-
-  const renderTags = async (tagsId: string[]) => {
-    const tagNames = await Promise.all(tagsId.map((tagId) => getTag(tagId)));
-    return tagNames.filter((tagName) => tagName !== undefined) as string[];
-  };
-
-  const handleDeleteItem = async (id: string) => {
-    try {
-      await deleteItem(id);
-      router.back();
-    } catch (error) {
-      console.error("Error handling delete:", error);
-    }
-  };
 
   if (loading) {
     return <Loader />;
@@ -98,9 +97,9 @@ const Item = ({ id }: CollectionProps) => {
             <Heading size="md">{item?.name}</Heading>
             {item?.description && <Text py="2">{item.description}</Text>}
             <Box>
-              {item?.tagNames?.map((tagName, index) => (
-                <Tag marginRight="2" marginBottom="2" key={index}>
-                  {tagName}
+              {item?.tagsId.map(id => (
+                <Tag marginRight="2" marginBottom="2" key={id}>
+                  {tagsMap[id]}
                 </Tag>
               ))}
             </Box>
@@ -109,13 +108,17 @@ const Item = ({ id }: CollectionProps) => {
             <Button variant="solid" colorScheme="blue">
               Edit
             </Button>
-            <Button variant="ghost" colorScheme="blue" onClick={() => handleDeleteItem(id)}>
+            <Button
+              variant="ghost"
+              colorScheme="blue"
+              onClick={onOpen}
+            >
               Delete
             </Button>
           </CardFooter>
         </Stack>
       </Card>
-      {/* <WarningModal isOpen={isOpen} onClose={onClose} id={id}/> */}
+      <WarningModal isOpen={isOpen} onClose={onClose} id={id}/>
     </>
   );
 };
