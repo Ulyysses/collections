@@ -14,17 +14,17 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 
-const WarningModal = ({ isOpen, onClose, id }: IModal) => {
-  // const router = useRouter();
+const WarningModal = ({ isOpen, onClose, deletionFunction }: IModal) => {
+  const router = useRouter();
 
-  // const handleDeleteItem = async (id: string) => {
-  //   try {
-  //     await deleteItem(id);
-  //     router.back();
-  //   } catch (error) {
-  //     console.error("Error handling delete:", error);
-  //   }
-  // };
+  const handleDelete = async () => {
+    try {
+      await deletionFunction?.();
+      router.back();
+    } catch (error) {
+      console.error("Error handling delete:", error);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -33,16 +33,11 @@ const WarningModal = ({ isOpen, onClose, id }: IModal) => {
         <ModalCloseButton />
         <ModalBody>
           <Text>
-            Are you sure you want to delete the item? It will be impossible to
-            restore it.
+            Are you sure you want to delete? This action cannot be undone.
           </Text>
         </ModalBody>
         <ModalFooter>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            // onClick={() => handleDeleteItem(id)}
-          >
+          <Button colorScheme="blue" mr={3} onClick={handleDelete}>
             Delete
           </Button>
         </ModalFooter>

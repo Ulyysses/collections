@@ -22,7 +22,8 @@ export interface ITag {
 export interface IModal {
   isOpen: boolean;
   onClose: () => void;
-  id: string;
+  deletionFunction?: () => void;
+  id?: string;
 }
 
 export enum CollectibleType {

@@ -6,9 +6,11 @@ import ItemList from "@/item-list";
 import ItemModal from "@/item-modal";
 import Loader from "@/loader";
 import { ICollection } from "@/types";
+import WarningModal from "@/warning-modal";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   Flex,
   Heading,
   IconButton,
@@ -28,7 +30,8 @@ const Collection = ({ id }: CollectionProps) => {
 
   const router = useRouter();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const itemModalDisclosure = useDisclosure();
+  const warningModalDisclosure = useDisclosure();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,20 +43,17 @@ const Collection = ({ id }: CollectionProps) => {
       } finally {
         setLoading(false);
       }
-    }; 
+    };
 
     fetchData();
   }, [id]);
 
   const handleDeleteCollection = (id: string) => {
     deleteCollection(id);
-    router.back();
-  }
+  };
 
   if (loading) {
-    return (
-      <Loader /> 
-    );
+    return <Loader />;
   }
 
   return (
@@ -62,21 +62,26 @@ const Collection = ({ id }: CollectionProps) => {
         <Flex justifyContent="space-between">
           <Heading size="lg">{collection?.title}</Heading>
           <Flex gap="4px">
-            <IconButton
-              aria-label="Add new item in collection"
-              icon={<AddIcon />}
-              onClick={onOpen}
-            />
             <IconButton aria-label="Edit Collection" icon={<EditIcon />} />
-            <IconButton aria-label="Delete Collection" icon={<DeleteIcon />} onClick={() => handleDeleteCollection(id)}/>
+            <IconButton
+              aria-label="Delete Collection"
+              icon={<DeleteIcon />}
+              onClick={warningModalDisclosure.onOpen}
+            />
           </Flex>
         </Flex>
         <Text fontSize="xl">{collection?.description}</Text>
         <Text fontSize="lg">{collection?.category}</Text>
+        <Flex justifyContent="flex-end">
+          <Button rightIcon={<AddIcon />} onClick={itemModalDisclosure.onOpen} mb="10px">
+            Add item
+          </Button>
+        </Flex>
         <ItemList collectionId={id} />
       </Box>
 
-      <ItemModal isOpen={isOpen} onClose={onClose} id={id} />
+      <ItemModal isOpen={itemModalDisclosure.isOpen} onClose={itemModalDisclosure.onClose} id={id} />
+      <WarningModal isOpen={warningModalDisclosure.isOpen} onClose={warningModalDisclosure.onClose} id={id} deletionFunction={() => handleDeleteCollection(id)}/>
     </>
   );
 };

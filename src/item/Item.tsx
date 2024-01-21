@@ -19,7 +19,6 @@ import {
   useDisclosure,
   Box,
 } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface CollectionProps {
@@ -34,7 +33,6 @@ const Item = ({ id }: CollectionProps) => {
   const [loading, setLoading] = useState(true);
   const [tagsMap, setTagsMap] = useState<TagsMap>({});
 
-  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
@@ -73,6 +71,10 @@ const Item = ({ id }: CollectionProps) => {
     fetchTags();
   }, [item]);
 
+  const handleDeleteItem = async (id: string) => {
+    deleteItem(id);
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -97,7 +99,7 @@ const Item = ({ id }: CollectionProps) => {
             <Heading size="md">{item?.name}</Heading>
             {item?.description && <Text py="2">{item.description}</Text>}
             <Box>
-              {item?.tagsId.map(id => (
+              {item?.tagsId.map((id) => (
                 <Tag marginRight="2" marginBottom="2" key={id}>
                   {tagsMap[id]}
                 </Tag>
@@ -108,17 +110,13 @@ const Item = ({ id }: CollectionProps) => {
             <Button variant="solid" colorScheme="blue">
               Edit
             </Button>
-            <Button
-              variant="ghost"
-              colorScheme="blue"
-              onClick={onOpen}
-            >
+            <Button variant="ghost" colorScheme="blue" onClick={onOpen}>
               Delete
             </Button>
           </CardFooter>
         </Stack>
       </Card>
-      <WarningModal isOpen={isOpen} onClose={onClose} id={id}/>
+      <WarningModal isOpen={isOpen} onClose={onClose} deletionFunction={() => handleDeleteItem(id)}/>
     </>
   );
 };
