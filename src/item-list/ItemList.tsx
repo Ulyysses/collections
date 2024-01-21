@@ -1,6 +1,5 @@
 "use client";
 
-import { getItemList } from "@/db/receiving/getItemList";
 import { getTag } from "@/db/receiving/getTag";
 import { IItem } from "@/types";
 import {
@@ -14,47 +13,18 @@ import {
   Flex,
   Link,
 } from "@chakra-ui/react";
-import { FlattenMaps } from "mongoose";
-import { useEffect, useMemo, useState } from "react";
-
-interface ItemListProps {
-  collectionId: string;
-}
+import { useEffect, useState } from "react";
 
 interface TagsMap {
   [key: string]: string;
 }
 
-const ItemList = ({ collectionId }: ItemListProps) => {
-  const [itemList, setItemList] = useState<IItem[]>([]);
+interface ItemListProps {
+  itemList: IItem[];
+}
+
+const ItemList = ({ itemList }: ItemListProps) => {
   const [tagsMap, setTagsMap] = useState<TagsMap>({});
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const listData: (FlattenMaps<any> & Required<{ _id: unknown }>)[] =
-          await getItemList(collectionId);
-
-        const processedList: IItem[] = listData.map((item) => {
-          return {
-            collectionId: String(item.collectionId),
-            name: String(item.name),
-            tagsId: item.tagsId.map(String),
-            _id: String(item._id),
-            description: item.description
-              ? String(item.description)
-              : undefined,
-          };
-        });
-
-        setItemList(processedList);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, [collectionId]);
 
   useEffect(() => {
     const fetchTags = async () => {

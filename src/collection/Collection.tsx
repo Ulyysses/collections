@@ -2,10 +2,11 @@
 
 import { deleteCollection } from "@/db/deletion/deleteCollection";
 import { getCollection } from "@/db/receiving/getCollection";
+import { getItemList } from "@/db/receiving/getItemList";
 import ItemList from "@/item-list";
 import ItemModal from "@/item-modal";
 import Loader from "@/loader";
-import { ICollection } from "@/types";
+import { ICollection, IItem } from "@/types";
 import WarningModal from "@/warning-modal";
 import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import {
@@ -17,7 +18,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { FlattenMaps } from "mongoose";
 import { useEffect, useState } from "react";
 
 interface CollectionProps {
@@ -27,8 +28,7 @@ interface CollectionProps {
 const Collection = ({ id }: CollectionProps) => {
   const [collection, setCollection] = useState<ICollection>();
   const [loading, setLoading] = useState(true);
-
-  const router = useRouter();
+  const [itemList, setItemList] = useState<IItem[]>([]);
 
   const itemModalDisclosure = useDisclosure();
   const warningModalDisclosure = useDisclosure();
@@ -51,6 +51,33 @@ const Collection = ({ id }: CollectionProps) => {
   const handleDeleteCollection = (id: string) => {
     deleteCollection(id);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const listData: (FlattenMaps<any> & Required<{ _id: unknown }>)[] =
+          await getItemList(id);
+
+        const processedList: IItem[] = listData.map((item) => {
+          return {
+            collectionId: String(item.collectionId),
+            name: String(item.name),
+            tagsId: item.tagsId.map(String),
+            _id: String(item._id),
+            description: item.description
+              ? String(item.description)
+              : undefined,
+          };
+        });
+
+        setItemList(processedList);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   if (loading) {
     return <Loader />;
@@ -77,10 +104,10 @@ const Collection = ({ id }: CollectionProps) => {
             Add item
           </Button>
         </Flex>
-        <ItemList collectionId={id} />
+        <ItemList itemList={itemList}/>
       </Box>
 
-      <ItemModal isOpen={itemModalDisclosure.isOpen} onClose={itemModalDisclosure.onClose} id={id} />
+      <ItemModal isOpen={itemModalDisclosure.isOpen} onClose={itemModalDisclosure.onClose} id={id} setItemList={setItemList}/>
       <WarningModal isOpen={warningModalDisclosure.isOpen} onClose={warningModalDisclosure.onClose} id={id} deletionFunction={() => handleDeleteCollection(id)}/>
     </>
   );

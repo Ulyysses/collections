@@ -17,14 +17,15 @@ import {
   TagCloseButton,
   TagLabel,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface ItemFormProps {
   id: string;
+  setItemList: Dispatch<SetStateAction<IItem[]>>; 
 }
 
-const ItemForm = ({ id }: ItemFormProps) => {
+const ItemForm = ({ id, setItemList }: ItemFormProps) => {
   const { register, handleSubmit, reset } = useForm<IItem>({
     defaultValues: {
       collectionId: id,
@@ -45,6 +46,7 @@ const ItemForm = ({ id }: ItemFormProps) => {
       data.tagsId = tagIds;
 
       await addNewItem(data);
+      setItemList((prevItemList: IItem[]) => [...prevItemList, data]);
 
       reset({
         collectionId: "",
@@ -95,7 +97,11 @@ const ItemForm = ({ id }: ItemFormProps) => {
             onChange={(e) => setTagValue(e.target.value)}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={() => tagValue && handleAddNewTag()}>
+            <Button
+              h="1.75rem"
+              size="sm"
+              onClick={() => tagValue && handleAddNewTag()}
+            >
               Add tag
             </Button>
           </InputRightElement>
