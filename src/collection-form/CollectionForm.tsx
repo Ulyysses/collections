@@ -10,6 +10,7 @@ import {
   Heading,
   Input,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -23,7 +24,10 @@ type FormValues = {
 const CollectionForm = () => {
   const { register, handleSubmit, reset, watch, setValue } =
     useForm<FormValues>();
+
   const watchedValues = watch();
+
+  const toast = useToast();
 
   useEffect(() => {
     const storedData = JSON.parse(
@@ -40,7 +44,21 @@ const CollectionForm = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      await addNewCollection(data);
+      const promise = toast.promise(addNewCollection(data), {
+        success: {
+          title: "Collection was created!",
+          description: "Now you can add an item",
+        },
+        error: {
+          title: "Collection was not created",
+          description: "Something went wrong",
+        },
+        loading: {
+          title: "Creating collection...",
+          description: "Please wait",
+        },
+      });
+      await promise;
       reset();
     } catch (error) {
       console.error("Error adding new collection:", error);

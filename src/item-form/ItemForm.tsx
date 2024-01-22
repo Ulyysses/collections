@@ -16,6 +16,7 @@ import {
   Tag,
   TagCloseButton,
   TagLabel,
+  useToast,
 } from "@chakra-ui/react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -37,6 +38,8 @@ const ItemForm = ({ id, setItemList }: ItemFormProps) => {
   const [tagValue, setTagValue] = useState("");
   const [tags, setTags] = useState<string[]>([]);
 
+  const toast = useToast();
+
   const onSubmit = async (data: IItem) => {
     try {
       const tagPromises = tags.map((tag) => addNewTag(tag));
@@ -45,7 +48,22 @@ const ItemForm = ({ id, setItemList }: ItemFormProps) => {
 
       data.tagsId = tagIds;
 
-      await addNewItem(data);
+      const promise = toast.promise(addNewItem(data), {
+        success: {
+          title: "Item was created!",
+          description: "keep developing your collection",
+        },
+        error: {
+          title: "Item was not created",
+          description: "Something went wrong",
+        },
+        loading: {
+          title: "Creating item...",
+          description: "Please wait",
+        },
+      });
+      await promise;
+
       setItemList((prevItemList: IItem[]) => [...prevItemList, data]);
 
       reset({
@@ -94,6 +112,7 @@ const ItemForm = ({ id, setItemList }: ItemFormProps) => {
             type="text"
             name="tagValue"
             value={tagValue}
+            required
             onChange={(e) => setTagValue(e.target.value)}
           />
           <InputRightElement width="4.5rem">
