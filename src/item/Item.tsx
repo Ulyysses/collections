@@ -18,6 +18,11 @@ import {
   Tag,
   useDisclosure,
   Box,
+  TagLabel,
+  TagCloseButton,
+  Input,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
@@ -75,6 +80,10 @@ const Item = ({ id }: CollectionProps) => {
     deleteItem(id);
   };
 
+  // const handleEditItem = () => {
+  //   setEditedItem(!editedItem);
+  // };
+
   if (loading) {
     return <Loader />;
   }
@@ -96,12 +105,30 @@ const Item = ({ id }: CollectionProps) => {
         />
         <Stack>
           <CardBody display="flex" flexDirection="column" gap="20px">
-            <Heading size="md">{item?.name}</Heading>
-            {item?.description && <Text py="2">{item.description}</Text>}
+            <Heading size="sm">{item?.name}</Heading>
             <Box>
+              {/* {editedItem && (
+                <InputGroup size="md" mb="20px">
+                  <Input type="text" />
+                  <InputRightElement width="4.5rem">
+                    <Button
+                      h="1.75rem"
+                      size="xs"
+                    >
+                      Add tag
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              )} */}
               {item?.tagsId.map((id) => (
-                <Tag marginRight="2" marginBottom="2" key={id}>
+                <Tag
+                  colorScheme="green"
+                  marginRight="2"
+                  marginBottom="2"
+                  key={id}
+                >
                   {tagsMap[id]}
+                  {/* {editedItem && <TagCloseButton />} */}
                 </Tag>
               ))}
             </Box>
@@ -116,7 +143,11 @@ const Item = ({ id }: CollectionProps) => {
           </CardFooter>
         </Stack>
       </Card>
-      <WarningModal isOpen={isOpen} onClose={onClose} deletionFunction={() => handleDeleteItem(id)}/>
+      <WarningModal
+        isOpen={isOpen}
+        onClose={onClose}
+        deletionFunction={() => handleDeleteItem(id)}
+      />
     </>
   );
 };
