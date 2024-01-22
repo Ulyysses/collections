@@ -3,6 +3,7 @@
 import { deleteCollection } from "@/db/deletion/deleteCollection";
 import { getCollection } from "@/db/receiving/getCollection";
 import { getItemList } from "@/db/receiving/getItemList";
+import { updateCollection } from "@/db/updating/updateCollection";
 import ItemList from "@/item-list";
 import ItemModal from "@/item-modal";
 import Loader from "@/loader";
@@ -15,20 +16,46 @@ import {
   Flex,
   Heading,
   IconButton,
+  Input,
+  Tag,
   Text,
+  Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
 import { FlattenMaps } from "mongoose";
 import { useEffect, useState } from "react";
+import { Form, SubmitHandler, useForm } from "react-hook-form";
 
 interface CollectionProps {
   id: string;
 }
 
+type FormValues = {
+  title: string;
+  description: string;
+};
+
 const Collection = ({ id }: CollectionProps) => {
   const [collection, setCollection] = useState<ICollection>();
   const [loading, setLoading] = useState(true);
   const [itemList, setItemList] = useState<IItem[]>([]);
+  const [editedCollection, setEditedCollection] = useState(false);
+  const [isFormChanged, setIsFormChanged] = useState(false);
+
+  const { register, handleSubmit, getValues } = useForm<FormValues>({
+    defaultValues: {
+      title: collection?.title,
+      description: collection?.description,
+    },
+  });
+
+  useEffect(() => {
+    const formValues = getValues();
+    const isChanged =
+      formValues.title !== collection?.title ||
+      formValues.description !== collection?.description;
+    setIsFormChanged(isChanged);
+  }, [getValues, collection]);
 
   const itemModalDisclosure = useDisclosure();
   const warningModalDisclosure = useDisclosure();
@@ -47,6 +74,10 @@ const Collection = ({ id }: CollectionProps) => {
 
     fetchData();
   }, [id]);
+
+  const handleEditCollection = () => {
+    setEditedCollection(!editedCollection);
+  };
 
   const handleDeleteCollection = (id: string) => {
     deleteCollection(id);
@@ -79,6 +110,20 @@ const Collection = ({ id }: CollectionProps) => {
     fetchData();
   }, [id]);
 
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    try {
+      if (isFormChanged) {
+        const updatedCollection = await updateCollection(data, id);
+        setCollection(updatedCollection);
+        setEditedCollection(false);
+      } else {
+        setEditedCollection(false);
+      }
+    } catch (error) {
+      console.error("Error adding new collection:", error);
+    }
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -86,29 +131,78 @@ const Collection = ({ id }: CollectionProps) => {
   return (
     <>
       <Box>
-        <Flex justifyContent="space-between">
-          <Heading size="lg">{collection?.title}</Heading>
-          <Flex gap="4px">
-            <IconButton aria-label="Edit Collection" icon={<EditIcon />} />
-            <IconButton
-              aria-label="Delete Collection"
-              icon={<DeleteIcon />}
-              onClick={warningModalDisclosure.onOpen}
-            />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Flex flexDirection="column" gap="10px">
+            <Flex justifyContent="space-between">
+              {editedCollection ? (
+                <Input
+                  defaultValue={collection?.title}
+                  {...register("title")}
+                ></Input>
+              ) : (
+                <Heading size="lg">{collection?.title}</Heading>
+              )}
+              <Flex gap="4px">
+                <IconButton
+                  aria-label="Edit Collection"
+                  icon={<EditIcon />}
+                  onClick={handleEditCollection}
+                />
+                <IconButton
+                  aria-label="Delete Collection"
+                  icon={<DeleteIcon />}
+                  onClick={warningModalDisclosure.onOpen}
+                />
+              </Flex>
+            </Flex>
+
+            {editedCollection ? (
+              <Textarea
+                height="auto"
+                resize="vertical"
+                defaultValue={collection?.description}
+                {...register("description")}
+              />
+            ) : (
+              <Text fontSize="md">{collection?.description}</Text>
+            )}
+
+            {editedCollection && (
+              <Button type="submit" mb="10px">
+                Save
+              </Button>
+            )}
+
+            <Box>
+              <Tag fontSize="sm">{collection?.category}</Tag>
+            </Box>
           </Flex>
-        </Flex>
-        <Text fontSize="xl">{collection?.description}</Text>
-        <Text fontSize="lg">{collection?.category}</Text>
+        </form>
+
         <Flex justifyContent="flex-end">
-          <Button rightIcon={<AddIcon />} onClick={itemModalDisclosure.onOpen} mb="10px">
+          <Button
+            rightIcon={<AddIcon />}
+            onClick={itemModalDisclosure.onOpen}
+            mb="10px"
+          >
             Add item
           </Button>
         </Flex>
-        <ItemList itemList={itemList}/>
+        <ItemList itemList={itemList} />
       </Box>
 
-      <ItemModal isOpen={itemModalDisclosure.isOpen} onClose={itemModalDisclosure.onClose} id={id} setItemList={setItemList}/>
-      <WarningModal isOpen={warningModalDisclosure.isOpen} onClose={warningModalDisclosure.onClose} id={id} deletionFunction={() => handleDeleteCollection(id)}/>
+      <ItemModal
+        isOpen={itemModalDisclosure.isOpen}
+        onClose={itemModalDisclosure.onClose}
+        id={id}
+        setItemList={setItemList}
+      />
+      <WarningModal
+        isOpen={warningModalDisclosure.isOpen}
+        onClose={warningModalDisclosure.onClose}
+        id={id}
+        deletionFunction={() => handleDeleteCollection(id)}
+      />
     </>
   );
 };
