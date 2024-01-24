@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { collectionSchema, itemSchema, tagSchema } from "./schemes";
+import { collectionSchema, itemSchema, tagSchema, userSchema } from "./schemes";
 
 const uri = `mongodb+srv://SaninaUlyana:${process.env.MONGODB_PASSWORD}@collections.zfhzge0.mongodb.net/collections`;
 
@@ -24,3 +24,7 @@ export const item_list =
 
 export const tag_list =
   mongoose.models.tag_list || mongoose.model("tag_list", tagSchema, "tag_list");
+
+export const users_base =
+  mongoose.models.users_base ||
+  mongoose.model("users_base", userSchema, "users_base");

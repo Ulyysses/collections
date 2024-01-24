@@ -45,7 +45,7 @@ const CollectionForm = () => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
       const promise = toast.promise(addNewCollection(data), {
-        success: {
+        success: { 
           title: "Collection was created!",
           description: "Now you can add an item",
         },

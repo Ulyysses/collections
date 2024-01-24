@@ -21,11 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className} suppressHydrationWarning={true}>
-        <Providers>
-          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-          <Header />
-          {children}
-        </Providers>
+          <Providers>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+            <Header />
+            {children}
+          </Providers>
       </body>
     </html>
   );

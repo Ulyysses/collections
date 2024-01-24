@@ -11,6 +11,7 @@ import {
   Link,
   useToast,
 } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -26,6 +27,7 @@ const AuthenticationForm = () => {
   const watchedValues = watch();
 
   const toast = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const storedData = JSON.parse(
@@ -43,52 +45,13 @@ const AuthenticationForm = () => {
     );
   }, [watchedValues]);
 
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      // Implement your authentication logic here
-      console.log("Authentication data:", data);
-
-      const promise = toast.promise(authenticateUser(data), {
-        success: {
-          title: "Authentication successful!",
-          description: "You are now logged in.",
-        },
-        error: {
-          title: "Authentication failed",
-          description: "Invalid email or password.",
-        },
-        loading: {
-          title: "Authenticating...",
-          description: "Please wait",
-        },
-      });
-
-      await promise;
+      console.log(data);
       reset();
     } catch (error) {
       console.error("Error during authentication:", error);
-    }
-  };
-
-  const authenticateUser = async (data: FormValues) => {
-    // Implement your authentication API call or logic here
-    // For example, you can use fetch or axios to send data to the server
-    // and handle the authentication process
-    // Replace the following with your actual authentication logic
-
-    // Simulating a delay for demonstration purposes
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Simulating successful authentication
-    // Replace the following with your actual success/error handling logic
-    const success = true;
-
-    if (success) {
-      // Authentication successful
-      console.log("User authenticated successfully:", data);
-    } else {
-      // Authentication failed
-      throw new Error("Authentication failed");
     }
   };
 

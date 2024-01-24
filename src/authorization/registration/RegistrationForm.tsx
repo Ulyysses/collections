@@ -1,5 +1,6 @@
 "use client";
 
+import { registerUser } from "@/db/authorization/registerUser";
 import {
   Box,
   Button,
@@ -10,11 +11,12 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
+import { signOut } from "next-auth/react";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 type FormValues = {
-  name: string;
+  username: string;
   email: string;
   password: string;
 };
@@ -42,9 +44,6 @@ const RegistrationForm = () => {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      // Implement your registration logic here
-      console.log("Registration data:", data);
-
       const promise = toast.promise(registerUser(data), {
         success: {
           title: "Registration successful!",
@@ -59,33 +58,10 @@ const RegistrationForm = () => {
           description: "Please wait",
         },
       });
-
       await promise;
       reset();
     } catch (error) {
       console.error("Error during registration:", error);
-    }
-  };
-
-  const registerUser = async (data: FormValues) => {
-    // Implement your registration API call or logic here
-    // For example, you can use fetch or axios to send data to the server
-    // and handle the registration process
-    // Replace the following with your actual registration logic
-
-    // Simulating a delay for demonstration purposes
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Simulating successful registration
-    // Replace the following with your actual success/error handling logic
-    const success = true;
-
-    if (success) {
-      // Registration successful
-      console.log("User registered successfully:", data);
-    } else {
-      // Registration failed
-      throw new Error("Registration failed");
     }
   };
 
@@ -100,7 +76,7 @@ const RegistrationForm = () => {
             <Input
               variant="flushed"
               type="text"
-              {...register("name", { required: true })}
+              {...register("username", { required: true })}
             />
           </FormControl>
 
@@ -122,9 +98,9 @@ const RegistrationForm = () => {
             />
           </FormControl>
           <Flex justify="center">
-          <Button colorScheme="teal" size="lg" mb="40px" type="submit">
-            Register
-          </Button>
+            <Button colorScheme="teal" size="lg" mb="40px" type="submit">
+              Register
+            </Button>
           </Flex>
         </form>
       </Box>
@@ -133,3 +109,4 @@ const RegistrationForm = () => {
 };
 
 export default RegistrationForm;
+
