@@ -16,7 +16,12 @@ const Header = () => {
   return (
     <Box bg="green.500">
       <MainLayout>
-        <Flex direction="row" alignItems="center" gap="5" mb="10px">
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          alignItems="center"
+          justifyContent="space-between"
+          p="10px"
+        >
           <Link href="/">
             <Heading as="h1" size="2xl">
               Coll
