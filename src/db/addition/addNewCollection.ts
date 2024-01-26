@@ -7,12 +7,9 @@ export const addNewCollection = async (newCollection: ICollection) => {
   try {
     await connectionMongo;
     const collection = await collection_list.create(newCollection);
-    await collection.save().then((savedCollection: ICollection) => {
-      console.log(
-        "🚀 ~ file: addNewCollection.ts:11 ~ awaitcollection.save ~ savedCollection:",
-        savedCollection
-      );
-    });
+    const savedCollection = await collection.save();
+    const savedCollectionPlain = savedCollection.toObject();
+    return savedCollectionPlain;
   } catch (error) {
     console.error("Error adding new collection:", error);
   }

@@ -7,13 +7,9 @@ export const addNewItem = async (newItem: IItem) => {
   try {
     await connectionMongo;
     const collection = await item_list.create(newItem);
-    await collection.save().then((savedItem: IItem) => {
-      console.log(
-        "🚀 ~ file: addNewItem.ts:45 ~ awaitcollection.save ~ savedItem:",
-        savedItem
-      );
-    });
-    console.log("New item added to MongoDB:", newItem);
+    const savedItem = await collection.save();
+    const savedItemPlain = savedItem.toObject();
+    return savedItemPlain;
   } catch (error) {
     console.error("Error adding new item:", error);
   }

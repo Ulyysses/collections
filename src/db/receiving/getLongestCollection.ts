@@ -31,7 +31,7 @@ export const getLongestCollection = async () => {
       }
     }
 
-    return await collection_list.findById(mostCommonCollectionId);
+    return await collection_list.findById(mostCommonCollectionId).lean();
   } catch (error) {
     console.log(error);
     throw error;

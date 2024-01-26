@@ -8,7 +8,7 @@ export const updateCollection = async (data: {
 }, id: string) => {
   try {
     await connectionMongo;
-    return await collection_list.findByIdAndUpdate(id, data, { new: true });
+    return await collection_list.findByIdAndUpdate(id, data, { new: true }).lean();
   } catch (error) {
     console.log(error);
     throw error;
