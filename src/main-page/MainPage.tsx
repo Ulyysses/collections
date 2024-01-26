@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import { getLongestCollection } from "@/db/receiving/getLongestCollection";
+import Loader from "@/loader";
 import { ICollection } from "@/types";
 import {
   Box,
@@ -18,15 +19,21 @@ import { useEffect, useState } from "react";
 
 const MainPage = () => {
   const [collection, setCollection] = useState<ICollection>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCollection = async () => {
       const collection = await getLongestCollection();
       setCollection(collection);
+      setLoading(false);
     };
 
     fetchCollection();
   }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <Card>
@@ -38,13 +45,13 @@ const MainPage = () => {
         <Stack divider={<StackDivider />} spacing="4">
           <Box>
             <Link href={`/collection/${collection?._id}`}>
-            <Heading size="xs" textTransform="uppercase">
-              {collection?.title}
-            </Heading>
-            <Text pt="2" fontSize="sm">
-              {collection?.description}
-            </Text>
-            <Tag>{collection?.category}</Tag>
+              <Heading size="xs" textTransform="uppercase">
+                {collection?.title}
+              </Heading>
+              <Text pt="2" fontSize="sm">
+                {collection?.description}
+              </Text>
+              <Tag>{collection?.category}</Tag>
             </Link>
           </Box>
         </Stack>
