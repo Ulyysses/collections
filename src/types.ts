@@ -3,7 +3,6 @@ export interface ICollection {
   title: string;
   description: string;
   category: string;
-  image?: string;
 }
 
 export interface IItem {

@@ -24,7 +24,7 @@ import {
 } from "@chakra-ui/react";
 import { FlattenMaps } from "mongoose";
 import { useEffect, useState } from "react";
-import { Form, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 interface CollectionProps {
   id: string;
@@ -63,8 +63,16 @@ const Collection = ({ id }: CollectionProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const collection = await getCollection(id);
-        setCollection(collection);
+        const collection: FlattenMaps<any> | null = await getCollection(id);
+
+        const processedCollection: ICollection = {
+          _id: String(collection?._id),
+          title: String(collection?.title),
+          description: String(collection?.description),
+          category: String(collection?.category),
+        };
+
+        setCollection(processedCollection);
       } catch (error) {
         console.log(error);
       } finally {
@@ -113,8 +121,17 @@ const Collection = ({ id }: CollectionProps) => {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
       if (isFormChanged) {
-        const updatedCollection = await updateCollection(data, id);
-        setCollection(updatedCollection);
+        const updatedCollection: FlattenMaps<any> | null =
+          await updateCollection(data, id);
+
+        const processedUpdatedCollection: ICollection = {
+          _id: String(updatedCollection?._id),
+          title: String(updatedCollection?.title),
+          description: String(updatedCollection?.description),
+          category: String(updatedCollection?.category),
+        };
+
+        setCollection(processedUpdatedCollection);
         setEditedCollection(false);
       } else {
         setEditedCollection(false);

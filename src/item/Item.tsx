@@ -19,6 +19,7 @@ import {
   useDisclosure,
   Box,
 } from "@chakra-ui/react";
+import { FlattenMaps } from "mongoose";
 import { useEffect, useState } from "react";
 
 interface CollectionProps {
@@ -38,8 +39,19 @@ const Item = ({ id }: CollectionProps) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const receivedItem = await getItem(id);
-        setItem(receivedItem);
+        const receivedItem: FlattenMaps<any> | null = await getItem(id);
+
+        const processedItem: IItem = {
+          collectionId: String(receivedItem?.collectionId),
+          name: String(receivedItem?.name),
+          tagsId: receivedItem?.tagsId.map(String),
+          _id: String(receivedItem?._id),
+          description: receivedItem?.description
+            ? String(receivedItem?.description)
+            : undefined,
+        };
+
+        setItem(processedItem);
       } catch (error) {
         console.log(error);
       } finally {
@@ -75,10 +87,6 @@ const Item = ({ id }: CollectionProps) => {
     deleteItem(id);
   };
 
-  // const handleEditItem = () => {
-  //   setEditedItem(!editedItem);
-  // };
-
   if (loading) {
     return <Loader />;
   }
@@ -102,19 +110,6 @@ const Item = ({ id }: CollectionProps) => {
           <CardBody display="flex" flexDirection="column" gap="20px">
             <Heading size="sm">{item?.name}</Heading>
             <Box>
-              {/* {editedItem && (
-                <InputGroup size="md" mb="20px">
-                  <Input type="text" />
-                  <InputRightElement width="4.5rem">
-                    <Button
-                      h="1.75rem"
-                      size="xs"
-                    >
-                      Add tag
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-              )} */}
               {item?.tagsId.map((id) => (
                 <Tag
                   colorScheme="green"
@@ -123,7 +118,6 @@ const Item = ({ id }: CollectionProps) => {
                   key={id}
                 >
                   {tagsMap[id]}
-                  {/* {editedItem && <TagCloseButton />} */}
                 </Tag>
               ))}
             </Box>

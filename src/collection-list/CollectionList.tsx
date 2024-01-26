@@ -12,6 +12,7 @@ import {
   Flex,
   Link,
 } from "@chakra-ui/react";
+import { FlattenMaps } from "mongoose";
 import { useEffect, useState } from "react";
 
 const CollectionList = () => {
@@ -21,8 +22,19 @@ const CollectionList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const list = await getCollectionList();
-        setCollectionList(list);
+        const listData: (FlattenMaps<any> & Required<{ _id: unknown }>)[] =
+          await getCollectionList();
+
+        const processedList: ICollection[] = listData.map((collection) => {
+          return {
+            _id: String(collection._id),
+            title: String(collection.title),
+            description: String(collection.description),
+            category: String(collection.category),
+          };
+        });
+
+        setCollectionList(processedList);
       } catch (error) {
         console.log(error);
       } finally {
@@ -34,9 +46,7 @@ const CollectionList = () => {
   }, []);
 
   if (loading) {
-    return (
-      <Loader/>
-    );
+    return <Loader />;
   }
 
   return (
