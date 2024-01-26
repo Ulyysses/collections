@@ -8,8 +8,7 @@ export const addNewTag = async (newTag: string) => {
     await connectionMongo;
     const tagObject = { tagName: newTag };
     const createdTag = await tag_list.create(tagObject);
-    const savedTag = await createdTag.save().toObject();
-    return savedTag;
+    return createdTag;
   } catch (error) {
     console.error("Error adding new item:", error);
   }
