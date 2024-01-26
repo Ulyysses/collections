@@ -21,6 +21,7 @@ const Header = () => {
           alignItems="center"
           justifyContent="space-between"
           p="10px"
+          mb="10px"
         >
           <Link href="/">
             <Heading as="h1" size="2xl">
