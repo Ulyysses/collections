@@ -112,7 +112,6 @@ const ItemForm = ({ id, setItemList }: ItemFormProps) => {
             type="text"
             name="tagValue"
             value={tagValue}
-            required
             onChange={(e) => setTagValue(e.target.value)}
           />
           <InputRightElement width="4.5rem">

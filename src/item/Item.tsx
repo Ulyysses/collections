@@ -18,11 +18,6 @@ import {
   Tag,
   useDisclosure,
   Box,
-  TagLabel,
-  TagCloseButton,
-  Input,
-  InputGroup,
-  InputRightElement,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
