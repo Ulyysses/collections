@@ -1,5 +1,6 @@
 "use client";
 
+import { authenticateUser } from "@/db/authorization/authenticateUser";
 import {
   Box,
   Button,
@@ -42,13 +43,28 @@ const AuthenticationForm = () => {
     localStorage.setItem(
       "authenticationFormData",
       JSON.stringify(watchedValues)
-    );
+    ); 
   }, [watchedValues]);
 
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      console.log(data);
+      const promise = toast.promise(authenticateUser(data), {
+        success: {
+          title: "Authentication successful!",
+          description: "You can now create collections.",
+        },
+        error: {
+          title: "Authentication failed",
+          description: "Something went wrong during authentication.",
+        },
+        loading: {
+          title: "Logging in...",
+          description: "Please wait",
+        },
+      });
+      await promise;
+      router.push("/collection");
       reset();
     } catch (error) {
       console.error("Error during authentication:", error);

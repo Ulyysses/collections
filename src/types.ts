@@ -19,6 +19,12 @@ export interface ITag {
   tagName: string;
 }
 
+export interface IUser {
+  email: string;
+  password: string;
+  username?: string;
+}
+
 export interface IModal {
   isOpen: boolean;
   onClose: () => void;

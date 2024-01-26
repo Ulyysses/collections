@@ -11,7 +11,7 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
-import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
@@ -26,7 +26,7 @@ const RegistrationForm = () => {
     useForm<FormValues>();
 
   const watchedValues = watch();
-
+  const router = useRouter();
   const toast = useToast();
 
   useEffect(() => {
@@ -59,6 +59,7 @@ const RegistrationForm = () => {
         },
       });
       await promise;
+      router.push("/authentication");
       reset();
     } catch (error) {
       console.error("Error during registration:", error);
