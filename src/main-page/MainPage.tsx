@@ -15,6 +15,7 @@ import {
   Tag,
   Text,
 } from "@chakra-ui/react";
+import { FlattenMaps } from "mongoose";
 import { useEffect, useState } from "react";
 
 const MainPage = () => {
@@ -23,8 +24,16 @@ const MainPage = () => {
 
   useEffect(() => {
     const fetchCollection = async () => {
-      const collection = await getLongestCollection();
-      setCollection(collection);
+      const collection: FlattenMaps<any> | null = await getLongestCollection();
+
+      const processedCollection: ICollection = {
+        _id: String(collection?._id),
+        title: String(collection?.title),
+        description: String(collection?.description),
+        category: String(collection?.category),
+      };
+
+      setCollection(processedCollection);
       setLoading(false);
     };
 
