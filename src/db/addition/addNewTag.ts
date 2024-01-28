@@ -7,8 +7,7 @@ export const addNewTag = async (newTag: string) => {
   try {
     await connectionMongo;
     const tagObject = { tagName: newTag };
-    const createdTag = await tag_list.create(tagObject);
-    return createdTag;
+    return JSON.parse(JSON.stringify(await tag_list.create(tagObject)))
   } catch (error) {
     console.error("Error adding new item:", error);
   }

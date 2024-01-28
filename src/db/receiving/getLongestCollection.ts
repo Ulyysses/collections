@@ -33,10 +33,8 @@ export const getLongestCollection = async () => {
         maxCount = collectionIdCount[collectionId];
       }
     }
-    
-    console.log("Most common collectionId:", mostCommonCollectionId);
 
-    return await collection_list.findById(mostCommonCollectionId);
+    return JSON.parse(JSON.stringify(await collection_list.findById(mostCommonCollectionId)));
   } catch (error) {
     console.log(error);
     throw error;

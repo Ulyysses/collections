@@ -6,7 +6,7 @@ export const getItemList = async (id: string) => {
   try {
     await connectionMongo;
     const query = { collectionId: id };
-    const items = await item_list.find(query).lean().exec();
+    const items = JSON.parse(JSON.stringify(await item_list.find(query)));
     return items;
   } catch (error) {
     console.log(error);
