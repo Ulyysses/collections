@@ -2,7 +2,6 @@
 
 import { deleteCollection } from "@/db/deletion/deleteCollection";
 import { getCollection } from "@/db/receiving/getCollection";
-import { getItemList } from "@/db/receiving/getItemList";
 import { updateCollection } from "@/db/updating/updateCollection";
 import ItemList from "@/item-list";
 import ItemModal from "@/item-modal";
@@ -28,6 +27,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 interface CollectionProps {
   id: string;
+  items: IItem[];
 }
 
 type FormValues = {
@@ -35,10 +35,10 @@ type FormValues = {
   description: string;
 };
 
-const Collection = ({ id }: CollectionProps) => {
+const Collection = ({ id, items }: CollectionProps) => {
   const [collection, setCollection] = useState<ICollection>();
   const [loading, setLoading] = useState(true);
-  const [itemList, setItemList] = useState<IItem[]>([]);
+  const [itemList, setItemList] = useState<IItem[]>(items);
   const [editedCollection, setEditedCollection] = useState(false);
   const [isFormChanged, setIsFormChanged] = useState(false);
 
@@ -91,32 +91,32 @@ const Collection = ({ id }: CollectionProps) => {
     deleteCollection(id);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const listData: (FlattenMaps<any> & Required<{ _id: unknown }>)[] =
-          await getItemList(id);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const listData: (FlattenMaps<any> & Required<{ _id: unknown }>)[] =
+  //         await getItemList(id);
 
-        const processedList: IItem[] = listData.map((item) => {
-          return {
-            collectionId: String(item.collectionId),
-            name: String(item.name),
-            tagsId: item.tagsId.map(String),
-            _id: String(item._id),
-            description: item.description
-              ? String(item.description)
-              : undefined,
-          };
-        });
+  //       const processedList: IItem[] = listData.map((item) => {
+  //         return {
+  //           collectionId: String(item.collectionId),
+  //           name: String(item.name),
+  //           tagsId: item.tagsId.map(String),
+  //           _id: String(item._id),
+  //           description: item.description
+  //             ? String(item.description)
+  //             : undefined,
+  //         }; 
+  //       });
 
-        setItemList(processedList);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  //       setItemList(processedList);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    fetchData();
-  }, [id]);
+  //   fetchData();
+  // }, [id]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {

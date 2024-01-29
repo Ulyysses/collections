@@ -1,9 +1,7 @@
 "use client";
 
 import { deleteItem } from "@/db/deletion/deleteItem";
-import { getItem } from "@/db/receiving/getItem";
 import { getTag } from "@/db/receiving/getTag";
-import Loader from "@/loader";
 import { IItem } from "@/types";
 import WarningModal from "@/warning-modal";
 import {
@@ -24,42 +22,43 @@ import { useEffect, useState } from "react";
 
 interface CollectionProps {
   id: string;
+  item: IItem;
 }
 interface TagsMap {
   [key: string]: string;
 }
 
-const Item = ({ id }: CollectionProps) => {
-  const [item, setItem] = useState<IItem>();
-  const [loading, setLoading] = useState(true);
+const Item = ({ id, item }: CollectionProps) => {
+  // const [item, setItem] = useState<IItem>(item);
+  // const [loading, setLoading] = useState(true);
   const [tagsMap, setTagsMap] = useState<TagsMap>({});
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const receivedItem: FlattenMaps<any> | null = await getItem(id);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const receivedItem: FlattenMaps<any> | null = await getItem(id);
 
-        const processedItem: IItem = {
-          collectionId: String(receivedItem?.collectionId),
-          name: String(receivedItem?.name),
-          tagsId: receivedItem?.tagsId.map(String),
-          _id: String(receivedItem?._id),
-          description: receivedItem?.description
-            ? String(receivedItem?.description)
-            : undefined,
-        };
+  //       const processedItem: IItem = {
+  //         collectionId: String(receivedItem?.collectionId),
+  //         name: String(receivedItem?.name),
+  //         tagsId: receivedItem?.tagsId.map(String),
+  //         _id: String(receivedItem?._id),
+  //         description: receivedItem?.description
+  //           ? String(receivedItem?.description)
+  //           : undefined,
+  //       };
 
-        setItem(processedItem);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [id]);
+  //       setItem(processedItem);
+  //     } catch (error) {
+  //       console.log(error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [id]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -87,9 +86,9 @@ const Item = ({ id }: CollectionProps) => {
     deleteItem(id);
   };
 
-  if (loading) {
-    return <Loader />;
-  }
+  // if (loading) {
+  //   return <Loader />;
+  // }
 
   return (
     <>

@@ -1,5 +1,3 @@
-"use client";
-
 import { ICollection } from "@/types";
 import {
   Card,
