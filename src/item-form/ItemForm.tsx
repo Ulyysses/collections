@@ -2,6 +2,7 @@
 
 import { addNewItem } from "@/db/addition/addNewItem";
 import { addNewTag } from "@/db/addition/addNewTag";
+import { getProposedTag } from "@/db/receiving/getProposedTag";
 import { IItem } from "@/types";
 import {
   Box,
@@ -18,12 +19,12 @@ import {
   TagLabel,
   useToast,
 } from "@chakra-ui/react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface ItemFormProps {
   id: string;
-  setItemList: Dispatch<SetStateAction<IItem[]>>; 
+  setItemList: Dispatch<SetStateAction<IItem[]>>;
 }
 
 const ItemForm = ({ id, setItemList }: ItemFormProps) => {
@@ -37,6 +38,7 @@ const ItemForm = ({ id, setItemList }: ItemFormProps) => {
 
   const [tagValue, setTagValue] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [tagSuggestions, setTagSuggestions] = useState([]);
 
   const toast = useToast();
 
@@ -89,6 +91,24 @@ const ItemForm = ({ id, setItemList }: ItemFormProps) => {
     );
   };
 
+  const handleInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setTagValue(value);
+
+    if (value.length === 0) {
+      setTagSuggestions([]);
+      return
+    }
+
+    try {
+      setTagSuggestions([]);
+      const tags = await getProposedTag(value);
+      setTagSuggestions(tags);
+    } catch (error) {
+      console.error("Error fetching tag suggestions:", error);
+    }
+  };
+
   return (
     <Flex direction="column">
       <Heading size="md" mb="20px">
@@ -112,8 +132,9 @@ const ItemForm = ({ id, setItemList }: ItemFormProps) => {
             type="text"
             name="tagValue"
             value={tagValue}
-            onChange={(e) => setTagValue(e.target.value)}
+            onChange={handleInputChange}
           />
+          <Box></Box>
           <InputRightElement width="4.5rem">
             <Button
               h="1.75rem"
@@ -124,6 +145,14 @@ const ItemForm = ({ id, setItemList }: ItemFormProps) => {
             </Button>
           </InputRightElement>
         </InputGroup>
+
+        <Flex gap="5px" wrap="wrap" mb="30px">
+          {tagSuggestions.map((tag) => (
+            <Button key={tag} onClick={() => setTagValue(tag)}>
+              {tag}
+            </Button>
+          ))}
+        </Flex>
 
         <Box mb="40px">
           {tags.map((tag, index) => (
